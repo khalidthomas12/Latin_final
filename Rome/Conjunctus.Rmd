@@ -9,19 +9,13 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-library(DT)
-library(gt)
-library(rsconnect)
 library(tidyverse)
-library(readxl)
-library(janitor)
-library(broom.mixed)
-library(stringr)
-library(rstanarm)
 library(shiny)
-library(ggplot2)
+library(shinythemes)
+library(dplyr)
+library(ggthemes)
 library(gt)
-library(devtools)
+
 
 ```
 
@@ -90,24 +84,18 @@ Authors <- c("Catullus", "Cicero", "Sallust")
 
 data <- tibble(Catullus, Cicero, Sallust)
 
-readrds
+
 selections <- c("Selection 1", "Selection 2", "Selection 3")
 
 final_data <- data %>% 
   add_column(Selections = selections) 
 
 
-write_rds(final_data, "Rome/final_data.rds")
+
 
 ```
 
 
 
-```{r}
-
-paste( final_data %>% 
-      select(Cicero, Selections) %>% 
-      filter(Selections == "Selection 1"))
 ```
-
 

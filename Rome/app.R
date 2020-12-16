@@ -8,12 +8,12 @@
 #
 
 library(tidyverse)
-library(dplyr)
+library(shiny)
 library(shinythemes)
 library(ggplot2)
+library(dplyr)
 
-
-data <- read_rds("final_data.rds")
+final_data <- read_rds("data.rds")
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(theme = shinytheme("slate"),
@@ -104,22 +104,19 @@ ui <- fluidPage(theme = shinytheme("slate"),
                                     br(),
                                     sidebarPanel(
                                       sidebarLayout(
+                                        selectInput(inputId = "chosen_work",
+                                                    "Text",
+                                                    final_data$Selections,
+                                                    selected = NULL),
                                         varSelectInput(inputId = "chosen_author",
                                                     "Author",
                                                     final_data %>% 
                                                       select(-Selections),
-                                                    selected = "Catullus",
-                                                    FALSE),
-                                        selectInput(inputId = "chosen_work",
-                                                    "Text",
-                                                    final_data$`Selections`,
-                                                    selected = "Selection 1",
-                                                    FALSE)
-                                        )),
+                                                    selected = NULL))),
                                     br(),
                                     br(), 
                                     mainPanel(
-                                      verbatimTextOutput("latin"),
+                                      textOutput("the_text"),
                                     br(),
                                     br(),
                                     br(),
@@ -165,18 +162,14 @@ ui <- fluidPage(theme = shinytheme("slate"),
 
 
 # Define server logic required to draw a histogram
-server <- function(input, output, sessiondeploy) {
-  output$latin <- renderText({
-  
-    paste( final_data %>% 
+server <- function(input, output) {
+  output$the_text <- renderText({
+   paste(
+     final_data %>% 
       select(input$chosen_author, Selections) %>% 
-      filter(Selections == input$chosen_work)
-   )
-  
-})
-  
-  
-
+      filter(Selections == input$chosen_work))
+      
+  })
   
 output$colleseum <- renderImage({
   img(src("Screen Shot 2020-12-16 at 1.24.52 PM.png"),
