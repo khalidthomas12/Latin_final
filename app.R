@@ -10,11 +10,14 @@
 library(shiny)
 library(shinythemes)
 library(shinydashboard)
+library(shinyWidgets)
 library(DT)
 library(shinyjs)
 library(sodium)
 library(glue)
 library(shinyjs)
+
+data <- read_rds("data.rds")
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(theme = shinytheme("slate"),
@@ -28,14 +31,14 @@ ui <- fluidPage(theme = shinytheme("slate"),
                                         h5("Conjunctus is an online platform that aims to connect Classical Latin texts to contemporary culture. Scholars of all levels are invited to interact with one another, and use cutural references and modern language to better understand Roman culture and literature.", align = "center"),
                                         br(),
                                         br(),
-                                        h3(strong("Why ConJunctus"), align = "center", style = "color:gold"),
+                                        h3(strong("Why ConJunctus?"), align = "center", style = "color:gold"),
                                         h5("This platform utilizes what you already know! By connecting Latin with English and modern culture, ConJunctus allows scholars to put the Latin in context. Classical Latin language and themes are connected to pop culture, music, phrases, politics, speeches, viral videos and so much more!", align = "center"),
                                         br(),
-                                        br(),h3(strong("Important Notes and Cites Sources"), align = "center", style = "color:gold"),
+                                        br(),
+                                        h3(strong("Important Notes and Cites Sources"), align = "center", style = "color:gold"),
                                         h5("Conjunctus.com is a uniqe tool intended for academic use. However, the Domain `Conjunctus.com is not registered to the creator of the website. This is only a proposal, and it is intented to be used as a model for a potential learning tool. In creation, thelatinlibrary.com provided the source for the texts. The annotation feature is similiar to genius.com annotation, and the forum is modeled after a reddit webpage. The idea for the tool, however, is unique.", align = "center"),
                                         br(),
                                         h5("There is currently no directory to store annotations, or to comment on forum posts. The library of Latin texts included is not an exhaustive list, and there is certainly a capacity to add more literature and better format the webpage"),
-                                        br(),
                                         br(),
                                         br(),
                                         br(),
@@ -106,7 +109,21 @@ ui <- fluidPage(theme = shinytheme("slate"),
                            ),
                           tabPanel("Forum",
                                    titlePanel(h1(strong("See How Other Scholars are Connecting Cross-Culturally!"), align = "center", style = "color:gold")),
-                                   fluidPage()
+                                   fluidPage(
+                                     dashboardPage(skin = "yellow",
+                                       dashboardHeader(title = "Community Forum"),
+                                       dashboardSidebar(),
+                                       dashboardBody(
+                                           box(width = 25, column(12, align = "center"),
+                                               dateInput(inputId = "date",
+                                                         h3("Date", style = "color:black"),
+                                                         value = "2020-12-18")),
+                                           textAreaInput(inputId = "forum",
+                                                         h3("Add a Message", style = "color:black"),
+                                                         "Type Message Here!"),
+                                           submitButton("Submit"))
+                                     )
+                                   )
                           )
                 )
 )
@@ -115,13 +132,15 @@ ui <- fluidPage(theme = shinytheme("slate"),
 
 
 # Define server logic required to draw a histogram
-server <- function(input, output) {
+server <- function(input, output, session) {
   output$the_text <- renderText({
    paste(final_data %>% 
       select(input$choose_author, Selections) %>% 
       filter(Selections == input$choose_work))
       
   })
+  
+
 
     
     
